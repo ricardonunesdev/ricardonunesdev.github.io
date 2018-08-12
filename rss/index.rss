@@ -1,0 +1,112 @@
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" version="2.0"><channel><title>ricardonunesdev</title><description>Becoming a better web developer</description><link>http://localhost:2368/</link><image><url>http://localhost:2368/favicon.png</url><title>ricardonunesdev</title><link>http://localhost:2368/</link></image><generator>Ghost 1.25</generator><lastBuildDate>Sun, 12 Aug 2018 18:33:08 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title>Separate environment variables from code</title><description>There are many benefits in separating your environment variables from your code. Protecting your private data is the most important one. But having different configurations for local development, staging, and production, is also a huge bonus.</description><link>http://localhost:2368/separate-environment-variables-from-code/</link><guid isPermaLink="false">5b706f4d319b9d25d1ca48dc</guid><category>Coding</category><dc:creator>Ricardo Nunes</dc:creator><pubDate>Tue, 08 May 2018 17:15:00 GMT</pubDate><media:content url="https://images.unsplash.com/photo-1422207049116-cfaf69531072?ixlib=rb-0.3.5&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=1080&amp;fit=max&amp;ixid=eyJhcHBfaWQiOjExNzczfQ&amp;s=d96b1ba508a8e7925c9d9f75cd81e971" medium="image"/><content:encoded>&lt;img src="https://images.unsplash.com/photo-1422207049116-cfaf69531072?ixlib=rb-0.3.5&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=1080&amp;fit=max&amp;ixid=eyJhcHBfaWQiOjExNzczfQ&amp;s=d96b1ba508a8e7925c9d9f75cd81e971" alt="Separate environment variables from code"&gt;&lt;p&gt;There are many benefits in separating your environment variables from your code. Protecting your private data is the most important one. But having different configurations for local development, staging, and production, is also a huge bonus.&lt;/p&gt;
+&lt;p&gt;If you're not separating your environment variables form your code, you should start right now. This is a quick guide on how I do it.&lt;/p&gt;
+&lt;h2 id="whatexactlyareenvironmentvariables"&gt;What exactly are environment variables?&lt;/h2&gt;
+&lt;p&gt;If you're already familiar with them, feel free to skip to the next section.&lt;br&gt;
+If not, read on.&lt;/p&gt;
+&lt;p&gt;Environment variables are little pieces of information (in key-value pair format) that are specific to the machine or instance where the code is running on. They are required to execute certain functions, like connecting to external services that require some authentication, or keeping private information, well, private.&lt;/p&gt;
+&lt;p&gt;If you have something like this in your code (taken from the &lt;a href="https://www.npmjs.com/package/mysql"&gt;mysql&lt;/a&gt; module instructions), then you should consider separating those variables:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-javascript"&gt;const mysql      = require('mysql');
+const connection = mysql.createConnection({
+    host     : 'localhost',
+    user     : 'me',
+    password : 'secret',
+    database : 'my_db'
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A few examples of data that should be separated from the code:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Database username and password&lt;/li&gt;
+&lt;li&gt;API key to an external service (like AWS or Twitter)&lt;/li&gt;
+&lt;li&gt;Secret salt used to encrypt your users' passwords&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The other huge benefit is having different environment variables on your local development machine and on your production server. Once you have them configured, you'll never have to change those values again (unless they change), saving time and headaches.&lt;/p&gt;
+&lt;p&gt;So separating those variables from the code will help you build a solid foundation that will work on any environment, provided there's a way to include those variables at runtime.&lt;/p&gt;
+&lt;h2 id="howtoactuallyseparatethem"&gt;How to actually separate them?&lt;/h2&gt;
+&lt;p&gt;I'm going to provide examples for Node.js running on Ubuntu 18.04, but practically every programming language and operating system allows for this in some way. Adjust the instructions to your setup.&lt;/p&gt;
+&lt;p&gt;There are three ways to do this. With a &lt;code&gt;.env&lt;/code&gt; file, using &lt;code&gt;export&lt;/code&gt;, or setting them when you run your code.&lt;/p&gt;
+&lt;h3 id="atruntime"&gt;At runtime&lt;/h3&gt;
+&lt;p&gt;If you only want to set the variables at runtime, just start the Node.js process like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;DB_HOST=localhost DB_USER=me DB_PASS=secret DB_NAME=my_db node index.js
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Where &lt;code&gt;DB_HOST&lt;/code&gt; is a variable and &lt;code&gt;localhost&lt;/code&gt; is its value.&lt;/p&gt;
+&lt;p&gt;This is also the method used by application hosting services like &lt;a href="https://docs.aws.amazon.com/lambda/latest/dg/env_variables.html#env_setting_up"&gt;AWS Lambda&lt;/a&gt; and &lt;a href="https://devcenter.heroku.com/articles/config-vars#setting-up-config-vars-for-a-deployed-application"&gt;Heroku&lt;/a&gt;, where you configure the environment variables on their UI or console, and they're initialized before your code is started.&lt;/p&gt;
+&lt;h3 id="beforerunning"&gt;Before running&lt;/h3&gt;
+&lt;p&gt;If you want to set up the variables for a session of development, initialize them before starting the Node.js process:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;export DB_HOST=localhost
+export DB_USER=me
+export DB_PASS=secret
+export DB_NAME=my_db
+node index.js
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The main advantage of this method is that the variables are persistent while your session is open, even through multiple starts of your application. As soon as you close your terminal or console, those variables are gone, and you need to set them up again.&lt;/p&gt;
+&lt;p&gt;To test if a variable is set up, just echo it in the console:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;echo $DB_HOST
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If you've done everything correctly, it should output &lt;code&gt;localhost&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 id="persistently"&gt;Persistently&lt;/h3&gt;
+&lt;p&gt;To keep those variables through multiple sessions and even restarts, you have to store them in a &lt;code&gt;.env&lt;/code&gt; file. Just create it in the root folder of your project and add the variables in the same format.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-bash"&gt;DB_HOST=localhost
+DB_USER=me
+DB_PASS=secret
+DB_NAME=my_db
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id="usingthevariablesinyourcode"&gt;Using the variables in your code&lt;/h2&gt;
+&lt;p&gt;If you're using the persistent method above (which you should), in Node.js the easiest, quickest, and most fool-proof way to do this is with the &lt;code&gt;dotenv&lt;/code&gt; module. It will manage the loading of the environment file and assign those values to specific variables that can later be used where needed in your code.&lt;/p&gt;
+&lt;p&gt;Just install the module, in the root folder of your project:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npm i dotenv --save
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Include the module on the first line of your main file:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-javascript"&gt;require('dotenv').config();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The environment variables will then be available under the &lt;code&gt;process.env&lt;/code&gt; object. Just insert them exactly where the values are supposed to be:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-javascript"&gt;const mysql      = require('mysql');
+const connection = mysql.createConnection({
+    host     : process.env.DB_HOST,
+    user     : process.env.DB_USER,
+    password : process.env.DB_PASS,
+    database : process.env.DB_NAME
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Check the official &lt;a href="https://www.npmjs.com/package/dotenv"&gt;dotenv&lt;/a&gt; module page for additional information and instructions.&lt;/p&gt;
+&lt;h2 id="protectyourdata"&gt;Protect your data&lt;/h2&gt;
+&lt;p&gt;If your project is under control version (as it should be), add the &lt;code&gt;.env&lt;/code&gt; file to your ignore file. Here's an example of &lt;code&gt;.gitignore&lt;/code&gt; file for those of you using Git:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;node_modules/
+.env
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If it isn't, just make sure you don't upload your &lt;code&gt;.env&lt;/code&gt; anywhere or send it to someone else.&lt;/p&gt;
+&lt;p&gt;Now your private data is safe and away from prying eyes.&lt;/p&gt;
+&lt;p&gt;You can create a different &lt;code&gt;.env&lt;/code&gt; file on your production server than the one on your local development machine, with different values of the same variables and everything will work as it should.&lt;/p&gt;
+&lt;p&gt;If after following these instruction you still can't make it work, send me a &lt;a href="https://twitter.com/ricardonunesdev"&gt;tweet&lt;/a&gt;, &lt;a href="https://www.facebook.com/ricardonunesdev"&gt;facebook&lt;/a&gt; message, or &lt;a href="mailto:ricardonunesdev@gmail.com?subject=%5BBlog%5D%20Environment%20variables"&gt;email&lt;/a&gt;, and I'll try my best to help you set it up.&lt;/p&gt;
+</content:encoded></item><item><title>Starting a new adventure</title><description>I've been thinking about starting a blog for a long time now. A place where I could write down my thoughts, ideas, and things that I've learned. Most of my work involves coding (I'm a web developer, by the way), and learning is a part of my everyday process.</description><link>http://localhost:2368/starting-a-new-adventure/</link><guid isPermaLink="false">5b706f4d319b9d25d1ca48d8</guid><category>Blogging</category><dc:creator>Ricardo Nunes</dc:creator><pubDate>Sun, 06 May 2018 08:28:00 GMT</pubDate><media:content url="http://localhost:2368/content/images/2018/05/terrah-holly-241981-unsplash.jpg" medium="image"/><content:encoded>&lt;div class="kg-card-markdown"&gt;&lt;img src="http://localhost:2368/content/images/2018/05/terrah-holly-241981-unsplash.jpg" alt="Starting a new adventure"&gt;&lt;p&gt;I've been thinking about starting a blog for a long time now. A place where I could write down my thoughts, ideas, and things that I've learned. Most of my work involves coding (I'm a web developer, by the way), and learning is a part of my everyday process.&lt;/p&gt;
+&lt;p&gt;I'm constantly searching for solutions to problems, researching new technologies, and looking for tips to improve my efficiency. Now I have a place to share those thoughts, and maybe help someone else along the way. But before I begin, and seeing as this is the first post on my blog, I should probably tell you a little bit about myself.&lt;/p&gt;
+&lt;h2 id="backgroundstory"&gt;Background story&lt;/h2&gt;
+&lt;p&gt;My name is Ricardo Nunes, I'm a software engineer from Portugal, and I've been coding professionally for the past 15+ years. I mostly do full stack web development in either Javascript or PHP, but I also dabble in infrastructure management and online marketing.&lt;/p&gt;
+&lt;p&gt;I'm fortunate enough to be self-employed and while most of my work is finding and fixing problems in web apps and online stores, sometimes I get hired to implement a custom solution to a specific problem (those are my favorites).&lt;/p&gt;
+&lt;p&gt;Building API-driven web apps with the MEAN stack from the ground up, tailored to a client's needs, is one of the things that fuels my passion, and keeps me working all through the night.&lt;/p&gt;
+&lt;h2 id="whynow"&gt;Why now?&lt;/h2&gt;
+&lt;p&gt;Why not?&lt;/p&gt;
+&lt;p&gt;I've been postponing this for so long that there really is no excuse to keep fending it off. I have so many thoughts and ideas in my mind, that sometimes it's hard to remember it all and a few of them fall through the cracks.&lt;/p&gt;
+&lt;p&gt;According to the &amp;quot;Learning Pyramid&amp;quot; (yes, it's a thing, go look it up, I'll wait), teaching others is the ultimate method to improve retention while you're learning. I'm not a guru, nor do I want to be one, but sharing what I'm learning seems to be a double-whammy. It'll help me learn faster and retain more information, and it also might help someone else that could be stuck on the same problem.&lt;/p&gt;
+&lt;p&gt;Plus I'll have a journal of the things I've learned and solved, and use it as a knowledge base, instead of googling everything under the sun. Looking back through the posts will probably show the progress I've done too, that's always nice.&lt;/p&gt;
+&lt;h2 id="ghostaws"&gt;Ghost + AWS&lt;/h2&gt;
+&lt;p&gt;I've been wrestling with the choice of a full-blown CMS, a lightweight blogging platform, or a static page generator. Then came the decision of the hosting, which was dependent on the platform itself. Would it be a VPS, a shared hosting plan, or a free static git-based service (you know which one I'm talking about).&lt;/p&gt;
+&lt;p&gt;The final decision on the combo (platform + hosting) came down to a couple of things:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Initial configuration&lt;/li&gt;
+&lt;li&gt;Post writing&lt;/li&gt;
+&lt;li&gt;Publishing process&lt;/li&gt;
+&lt;li&gt;Technology stack&lt;/li&gt;
+&lt;li&gt;Cost&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The finalists were Wordpress with shared hosting, Ghost with VPS, and Jekyll with GitHub Pages. I'll spare you the details of this decision, but ultimately I went with Ghost on AWS and couldn't be happier.&lt;/p&gt;
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2018/05/ghost-aws.png" alt="Starting a new adventure"&gt;&lt;/p&gt;
+&lt;p&gt;It was a quick installation with minimal configuration, the post writing is one of the best I've seen so far, I can write on any device I own, and publishing is as easy as pressing a button on the UI.&lt;/p&gt;
+&lt;p&gt;Ghost is coded in Node.js and seeing as my goal is to develop more web apps with the MEAN stack and deploy them on AWS, it just made sense to combine these two for my blog. I also get the added benefit of expanding my knowledge as this setup is very similar to what I'm doing for my clients.&lt;/p&gt;
+&lt;p&gt;The cost is probably going to be the highest of the three, but the learning experience will far outweigh it.&lt;/p&gt;
+&lt;p&gt;I'll probably write a couple of posts describing the entire process in detail, so that if anyone is thinking about doing the same, it'll be just a click away. I'll post the links here when they're published.&lt;/p&gt;
+&lt;h2 id="whattoexpect"&gt;What to expect?&lt;/h2&gt;
+&lt;p&gt;My goal is to write my thoughts and learning experiences on the journey to become a better web developer.&lt;/p&gt;
+&lt;p&gt;You can expect to see guides on creating web apps from scratch, solutions to everyday coding problems, tips on server management and application lifecycle, and general QoL tips on the process of web development.&lt;/p&gt;
+&lt;p&gt;Hopefully you'll find something interesting and/or useful that will help you on your own journey, who knows?&lt;/p&gt;
+&lt;p&gt;One last note: there will be no comments on this blog. But feel free to reach out to me through &lt;a href="https://twitter.com/ricardonunesdev"&gt;twitter&lt;/a&gt;, &lt;a href="https://www.facebook.com/ricardonunesdev"&gt;facebook&lt;/a&gt;, &lt;a href="mailto:ricardonunesdev@gmail.com?subject=%5BBlog%5D%20Starting%20a%20new%20adventure"&gt;email&lt;/a&gt;, or any other social network where you can find me (just look for 'ricardonunesdev').&lt;/p&gt;
+&lt;/div&gt;</content:encoded></item></channel></rss>
