@@ -33,7 +33,7 @@ for i in $(find . -name '*.html'); do
 
 	echo "File: $i"
 
-	echo '<html lang="en">' | cat - "$i" > temp && mv temp "$i"
+	echo '<html amp lang="en">' | cat - "$i" > temp && mv temp "$i"
 	echo '<!DOCTYPE html>' | cat - "$i" > temp && mv temp "$i"
 	echo '</html>' >> "$i"
 done
