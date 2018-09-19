@@ -26,9 +26,9 @@ grep -R 'localhost:2368' .
 
 
 
-echo "Fixing html tags"
+echo "Fixing html tag for amp pages"
 
-for i in $(find . -name '*.html'); do
+for i in $(find . -wholename '*/amp/*.html'); do
 	[ -f "$i" ] || break
 
 	echo "File: $i"
@@ -37,6 +37,21 @@ for i in $(find . -name '*.html'); do
 	echo '<!DOCTYPE html>' | cat - "$i" > temp && mv temp "$i"
 	echo '</html>' >> "$i"
 done
+
+
+
+echo "Fixing html tag for non-amp pages"
+
+for i in $(find . -name '*.html' -not -path '*/amp/*'); do
+	[ -f "$i" ] || break
+
+        echo "File: $i"
+
+        echo '<html lang="en">' | cat - "$i" > temp && mv temp "$i"
+        echo '<!DOCTYPE html>' | cat - "$i" > temp && mv temp "$i"
+        echo '</html>' >> "$i"
+done
+
 
 
 echo "Finished"
