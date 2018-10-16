@@ -10,7 +10,7 @@
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" type="text/css" href="../../assets/built/screen.css?v=4ea5cb0e7f">
+    <link rel="stylesheet" type="text/css" href="../../assets/built/screen.css?v=6620c929d3">
 
     <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
     <link rel="canonical" href="index.html">
@@ -60,7 +60,7 @@
 }
     </script>
 
-    <meta name="generator" content="Ghost 1.25">
+    <meta name="generator" content="Ghost 2.2">
     <link rel="alternate" type="application/rss+xml" title="ricardonunesdev" href="../../rss/index.html">
     <style type="text/css">
     ul { margin-top: -1em; }
@@ -168,18 +168,21 @@
     </div>
 
 
-    <aside style="display:none;">
-        <a href="../../sitemap.xml">sitemap.xml</a>
-        <a href="../../sitemap-pages.xml">sitemap-pages.xml</a>
-        <a href="../../sitemap-posts.xml">sitemap-posts.xml</a>
-        <a href="../../sitemap-authors.xml">sitemap-authors.xml</a>
-        <a href="../../sitemap-tags.xml">sitemap-tags.xml</a>
-        <a href="../../sitemap.xsl">sitemap.xsl</a>
-    </aside>
+    <script>
+        var images = document.querySelectorAll('.kg-gallery-image img');
+        images.forEach(function (image) {
+            var container = image.closest('.kg-gallery-image');
+            var width = image.attributes.width.value;
+            var height = image.attributes.height.value;
+            var ratio = width / height;
+            container.style.flex = ratio + ' 1 0%';
+        })
+    </script>
+
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous">
     </script>
-    <script type="text/javascript" src="../../assets/js/jquery.fitvids.js?v=4ea5cb0e7f"></script>
+    <script type="text/javascript" src="../../assets/js/jquery.fitvids.js?v=6620c929d3"></script>
 
     <script>
         // maxPages is a global variable that is needed to determine
@@ -187,7 +190,7 @@
         // we reached the last page already.
         var maxPages = parseInt('1');
     </script>
-    <script src="../../assets/js/infinitescroll.js?v=4ea5cb0e7f"></script>
+    <script src="../../assets/js/infinitescroll.js?v=6620c929d3"></script>
 
     
 
